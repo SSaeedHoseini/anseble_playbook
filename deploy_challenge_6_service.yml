@@ -1,44 +1,43 @@
 ---
 - name: Deploy Python Service
   hosts: localhost
-  become_method: sudo
+  become: yes
   vars:
     ansible_ssh_private_key_file: /home/ho/.ssh/id_rsa
 
   tasks:
     - name: Ensure the SSH key for github.com is in known_hosts
-      shell: "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"
+      shell: ssh-keyscan -H github.com >> /home/ho/.ssh/known_hosts
       args:
-        creates: ~/.ssh/known_hosts
-      
+        creates: /home/ho/.ssh/known_hosts
+      become: no
+      run_once: yes
+
     - name: Clone the repository
       git:
         repo: 'git@github.com:SSaeedHoseini/challenge_6.git'
         dest: /tmp/challenge_6
         version: main
         key_file: /home/ho/.ssh/id_rsa
-      become: yes
-
+      environment:
+        GIT_SSH_COMMAND: "ssh -i /home/ho/.ssh/id_rsa -o UserKnownHostsFile=/home/ho/.ssh/known_hosts"
+    
     - name: Copy the Python script to /usr/local/bin
       copy:
         src: /tmp/challenge_6/script.py
         dest: /usr/local/bin/script.py
         mode: '0755'
-      become: yes
-
+    
     - name: Copy the service file to systemd
       copy:
         src: /tmp/challenge_6/challenge_6.service
         dest: /etc/systemd/system/challenge_6.service
-      become: yes
-
+    
     - name: Reload systemd daemon
       command: systemctl daemon-reload
-      become: yes
-
+    
     - name: Enable and start the service
       systemd:
         name: challenge_6
         enabled: yes
         state: started
-      become: yes
