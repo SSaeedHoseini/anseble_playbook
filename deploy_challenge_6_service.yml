@@ -1,0 +1,34 @@
+---
+- name: Deploy Python Service
+  hosts: localhost
+  tasks:
+    - name: Clone the repository
+      git:
+        repo: 'git@github.com:SSaeedHoseini/challenge_6.git'
+        dest: /tmp/challenge_6
+        version: main
+      become: yes
+
+    - name: Copy the Python script to /usr/local/bin
+      copy:
+        src: /tmp/challenge_6/script.py
+        dest: /usr/local/bin/script.py
+        mode: '0755'
+      become: yes
+
+    - name: Copy the service file to systemd
+      copy:
+        src: /tmp/challenge_6/challenge_6.service
+        dest: /etc/systemd/system/challenge_6.service
+      become: yes
+
+    - name: Reload systemd daemon
+      command: systemctl daemon-reload
+      become: yes
+
+    - name: Enable and start the service
+      systemd:
+        name: challenge_6
+        enabled: yes
+        state: started
+      become: yes
