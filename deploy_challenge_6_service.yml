@@ -1,6 +1,7 @@
 ---
 - name: Deploy Python Service
   hosts: localhost
+  become_method: sudo
   tasks:
     - name: Clone the repository
       git:
