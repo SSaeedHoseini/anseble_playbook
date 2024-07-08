@@ -2,13 +2,14 @@
 - name: Deploy Python Service
   hosts: localhost
   become_method: sudo
+  vars:
+    ansible_ssh_private_key_file: /home/ho/.ssh/id_rsa
   tasks:
     - name: Clone the repository
       git:
         repo: 'git@github.com:SSaeedHoseini/challenge_6.git'
         dest: /tmp/challenge_6
         version: main
-        key_file: ~/.ssh/id_rsa
       become: yes
 
     - name: Copy the Python script to /usr/local/bin
