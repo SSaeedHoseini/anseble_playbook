@@ -1,5 +1,5 @@
 deploy:
-	ansible-playbook deploy_challenge_6_service.yml
+	ansible-playbook deploy_challenge_6_service.yml  --ask-become-pass
 
 status:
 	systemctl status challenge_6
