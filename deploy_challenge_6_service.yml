@@ -10,6 +10,7 @@
         repo: 'git@github.com:SSaeedHoseini/challenge_6.git'
         dest: /tmp/challenge_6
         version: main
+        key_file: /home/ho/.ssh/id_rsa
       become: yes
 
     - name: Copy the Python script to /usr/local/bin
